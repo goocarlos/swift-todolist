@@ -7,11 +7,21 @@
 //
 
 import UIKit
+import CoreData
 
 class AddToDoItemViewController: UIViewController {
     
     var toDoItem:ToDoItem!
 
+    lazy var managedObjectContext : NSManagedObjectContext? = {
+        let appDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+        if let managedObjectContext = appDelegate.managedObjectContext{
+            return managedObjectContext
+        } else{
+            return nil
+        }
+        }()
+    
     @IBOutlet weak var textField: UITextField!
     
     @IBOutlet weak var doneButton: UIBarButtonItem!
@@ -23,9 +33,7 @@ class AddToDoItemViewController: UIViewController {
         }
         
         if(countElements(self.textField.text) > 0 ){
-            self.toDoItem = ToDoItem()
-            self.toDoItem.itemName = self.textField.text
-            self.toDoItem.completed = false
+            self.toDoItem = ToDoItem.createInManagedObjectContext(self.managedObjectContext!, itemName: self.textField.text)
         }
     }
     
